@@ -1,9 +1,20 @@
 
-resource "aws_instance" "db" {
+resource "aws_instance" "expense" {
+  count = length(var.instance_names)
   ami           = var.image_id
-  instance_type = var.instance_type
+  instance_type = var.instance_names[count.index] == "db" ? "t3.small" : "t3.micro"
   vpc_security_group_ids = [aws_security_group.allow_ssh.id]
-  tags = var.tags
+  tags = merge(
+    var.common_tags,
+
+    {
+        Name = var.instance_names[count.index]
+        Module = var.instance_names[count.index]
+    }
+
+  
+  )
+      
 
 }
 
